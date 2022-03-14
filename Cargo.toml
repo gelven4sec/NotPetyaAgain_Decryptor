@@ -6,3 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+getrandom = { version = "0.2", features = ["rdrand"] }
+rand = { version = "0.8", default-features = false, features = ["getrandom"] }
+x25519-dalek = { version = "2.0.0-pre.1", default-features = false, features = ["u64_backend"] }
+hex = { version = "0.4", default-features = false }
+#k256 = { version = "0.11.0-pre.0", default-features = false, features = ["ecdh", "jwk"] }
