@@ -35,7 +35,7 @@ async fn root() -> Html<&'static str> {
 
 async fn get_key(Json(payload): Json<GetKey>, ) -> impl IntoResponse {
     let id = payload.id;
-    let re = Regex::new(r"[0-9a-f]{64}").unwrap();
+    let re = Regex::new(r"^(?:[A-Za-z\d+/]{4})*(?:[A-Za-z\d+/]{3}=|[A-Za-z\d+/]{2}==)?$").unwrap();
 
      return match re.is_match(&id) {
         true => {
@@ -44,15 +44,18 @@ async fn get_key(Json(payload): Json<GetKey>, ) -> impl IntoResponse {
             let private = StaticSecret::from(private_buf);
 
             let mut buf = [0u8; 32];
-            hex::decode_to_slice(id, &mut buf).unwrap();
+            //hex::decode_to_slice(id, &mut buf).unwrap();
+            let decoded = base64::decode(id).unwrap();
+            buf.copy_from_slice(decoded.as_slice());
 
             let victim = PublicKey::from(buf);
             let key = private.diffie_hellman(&victim);
 
-            let mut buf = [0u8; 64];
-            hex::encode_to_slice(key.as_bytes(), &mut buf).expect("key to hex");
+            //let mut buf = [0u8; 44];
+            //hex::encode_to_slice(key.as_bytes(), &mut buf).expect("key to hex");
+            let key_str = base64::encode(key.as_bytes());
 
-            let key_str = String::from_utf8(buf.to_vec()).unwrap();
+            //let key_str = String::from_utf8(buf.to_vec()).unwrap();
 
             let res = Response{ status: true, data: key_str };
 
